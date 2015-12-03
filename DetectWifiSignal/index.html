@@ -4,6 +4,7 @@
    <script src="./canvasjs.min.js"></script>
 </head> 
 <body>
+   <span>Raw data: </span> <span id="div_raw"></span> <br>
    <span>Current RSSI: </span> <span id="div_rssi"></span> <br>
    <span>Filtered RSSI: </span> <span id="div_rssi_filtered"></span> <br>
 
@@ -28,6 +29,7 @@
     }
 
     evtSource.onmessage = function(e) {
+        document.getElementById("div_raw").innerHTML = e.data;
 	var rssi = parseInt(e.data.split(" ")[3]);
         filter.shift();
         filter.push(rssi*filterAmp);

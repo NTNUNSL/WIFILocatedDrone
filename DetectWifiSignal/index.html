@@ -1,0 +1,28 @@
+<!DOCTYPE Html>
+<html> 
+<body>
+   <h2>Message:</h2>
+   <ul id="eventlist">
+      <li id="msg"></li>
+   </ul>
+
+   <script>              
+    var eventList = document.getElementById("eventlist");
+    var evtSource = new EventSource("http://localhost:4000/msg");
+
+    evtSource.onmessage = function(e) {
+        console.log("received event");
+        console.log(e);
+	document.getElementById("msg").innerHTML = e.data.split(" ")[3];
+    };      
+
+    evtSource.onerror = function(e) {
+        console.log("EventSource failed.");
+    };
+
+    console.log(evtSource);
+
+    </script>
+
+</body>
+</html>

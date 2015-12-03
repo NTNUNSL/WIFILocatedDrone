@@ -1,27 +1,56 @@
 <!DOCTYPE Html>
-<html> 
+<html>
+<head>
+   <script src="./canvasjs.min.js"></script>
+</head> 
 <body>
-   <h2>Message:</h2>
+   <h2>Current RSSI:</h2>
    <ul id="eventlist">
       <li id="msg"></li>
    </ul>
 
+   <div id="chartContainer" style="height: 300px; width:100%;"></div>
+
    <script>              
     var eventList = document.getElementById("eventlist");
     var evtSource = new EventSource("http://localhost:4000/msg");
+    var data = [];
+    var count = 0;
+    var dataLength = 500;
+    
+    for (count = 0; count < dataLength; count += 1) {
+        data.push({ x: count, y: '' });
+    } 
 
     evtSource.onmessage = function(e) {
-        console.log("received event");
-        console.log(e);
-	document.getElementById("msg").innerHTML = e.data.split(" ")[3];
+	var rssi = parseInt(e.data.split(" ")[3]);
+	document.getElementById("msg").innerHTML = rssi;
+        data.shift();
+        data.push({ x: count, y: rssi });
+	count += 1;
+        chart.render();
     };      
-
-    evtSource.onerror = function(e) {
-        console.log("EventSource failed.");
-    };
-
-    console.log(evtSource);
-
+    
+    var chart = new CanvasJS.Chart("chartContainer",{
+		title: {
+			text: "RSSI: "
+		},
+		axisX: {
+			labelFontSize: 12,
+			labelAngle: -50
+		},
+		axisY: {
+        		minimum: -100,
+        		maximum: 0      
+      		},
+		data: [
+		{
+			type: "line",
+			dataPoints: data 
+		},
+		]
+	});
+    
     </script>
 
 </body>

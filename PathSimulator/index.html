@@ -7,6 +7,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <div id="x"></div>
 <div id="y"></div>
+<div id="rssi"></div>
 <div id="debug"></div>
 
 <script>
@@ -18,14 +19,26 @@ var ctx = canvas.getContext("2d");
 
 var cur_x = 10;
 var cur_y = 100;
-var speed_x = 0.5;
-var speed_y = 0.9;
+var speed_x = 1;
+var speed_y = 3;
+
+function init_rssi() {
+   ctx.fillStyle = "rgb(255,100,0)";
+   ctx.beginPath();
+   ctx.arc(canvas.width/2, canvas.height/2, 250, 0, 2 * Math.PI);
+   ctx.fill();
+   ctx.closePath();
+}
 
 function update_drone() {
    document.getElementById("x").innerHTML = cur_x;
    document.getElementById("y").innerHTML = cur_y;
+   document.getElementById("rssi").innerHTML = 1;
 
    ctx.clearRect(0, 0, canvas.width, canvas.width);
+   
+   init_rssi();
+
    ctx.fillStyle = "rgb(150,29,28)";
    ctx.beginPath();
    ctx.arc(cur_x, cur_y, 5, 0, 2 * Math.PI);
@@ -35,7 +48,7 @@ function update_drone() {
    if (cur_x >= canvas.width | cur_x <= 0) {
       speed_x *= -1;
    }
-   if (cur_y >= canvas.width | cur_y <= 0) {
+   if (cur_y >= canvas.height | cur_y <= 0) {
       speed_y *= -1;
    }
 

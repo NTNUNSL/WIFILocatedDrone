@@ -4,11 +4,11 @@
 
 <canvas id="simulator" style="border:1px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.</canvas>
-
-<div id="x"></div>
-<div id="y"></div>
-<div id="rssi"></div>
-<div id="debug"></div>
+<br>
+<span>Current X: </span><span id="x"></span><br>
+<span>Current Y: </span><span id="y"></span><br>
+<span>Current RSSI: </span><span id="rssi"></span><br>
+<span id="debug"></span><br>
 
 <script>
 
@@ -17,34 +17,38 @@ canvas.width = 800;
 canvas.height = 600;
 var ctx = canvas.getContext("2d");
 
+var rssi_radius = 300;
 var cur_x = 10;
 var cur_y = 100;
 var speed_x = 1;
 var speed_y = 3;
 
 function init_rssi() {
-   ctx.fillStyle = "rgb(255,100,0)";
+   var grd = ctx.createRadialGradient(canvas.width/2, canvas.height/2, rssi_radius, canvas.width/2, canvas.height/2, 0);
+   grd.addColorStop(1, "red");
+   grd.addColorStop(0, "white");
+
+   ctx.fillStyle = grd;
    ctx.beginPath();
-   ctx.arc(canvas.width/2, canvas.height/2, 250, 0, 2 * Math.PI);
+   ctx.arc(canvas.width/2, canvas.height/2, rssi_radius, 0, 2 * Math.PI);
    ctx.fill();
    ctx.closePath();
 }
 
 function update_drone() {
-   document.getElementById("x").innerHTML = cur_x;
-   document.getElementById("y").innerHTML = cur_y;
-   document.getElementById("rssi").innerHTML = 1;
-
    ctx.clearRect(0, 0, canvas.width, canvas.width);
    
    init_rssi();
 
-   ctx.fillStyle = "rgb(150,29,28)";
+   var p = ctx.getImageData(cur_x, cur_y, 10, 10).data;
+   var rssi = p[1] == 0 ? 0 : 255-p[1];
+
+   ctx.fillStyle = "rgb(150,28,28)";
    ctx.beginPath();
    ctx.arc(cur_x, cur_y, 5, 0, 2 * Math.PI);
    ctx.fill();
    ctx.closePath(); 
-   
+
    if (cur_x >= canvas.width | cur_x <= 0) {
       speed_x *= -1;
    }
@@ -54,6 +58,10 @@ function update_drone() {
 
    cur_x += speed_x;
    cur_y += speed_y;
+
+   document.getElementById("x").innerHTML = cur_x;
+   document.getElementById("y").innerHTML = cur_y;
+   document.getElementById("rssi").innerHTML = rssi;
 }
 
 setInterval(update_drone, 1000/60);

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="simulator" width="500" height="500" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+
+<div id="x"></div>
+<div id="y"></div>
+
+<script>
+
+var c = document.getElementById("simulator");
+var ctx = c.getContext("2d");
+
+var cur_x = 10;
+var cur_y = 100;
+var speed_x = 0.5;
+var speed_y = 0.9;
+
+function update_drone() {
+   document.getElementById("x").innerHTML = cur_x;
+   document.getElementById("y").innerHTML = cur_y;
+
+   ctx.clearRect(0, 0, 500, 500);
+   ctx.fillStyle = "rgb(150,29,28)";
+   ctx.beginPath();
+   ctx.arc(cur_x, cur_y, 5, 0, 2 * Math.PI);
+   ctx.fill();
+   ctx.closePath(); 
+   
+   if (cur_x >= 500 | cur_x <= 0) {
+      speed_x *= -1;
+   }
+   if (cur_y >= 500 | cur_y <= 0) {
+      speed_y *= -1;
+   }
+
+   cur_x += speed_x;
+   cur_y += speed_y;
+}
+
+setInterval(update_drone, 1000/60);
+
+</script> 
+
+</body>
+</html>
+

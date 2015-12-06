@@ -50,7 +50,7 @@ function update_drone() {
    var p = ctx.getImageData(cur_x, cur_y, 10, 10).data;
    var rssi = p[1] == 0 ? 0 : 255-p[1];
 
-   ctx.fillStyle = "rgb(150,28,28)";
+   ctx.fillStyle = "black";
    ctx.beginPath();
    ctx.arc(cur_x, cur_y, 5, 0, 2 * Math.PI);
    ctx.fill();
@@ -63,9 +63,11 @@ function update_drone() {
    // boundary
    if (cur_x >= canvas.width | cur_x <= 0) {
       speed_x *= -1;
+      cur_x = Math.min(Math.max(0, cur_x), canvas.width);
    }
    if (cur_y >= canvas.height | cur_y <= 0) {
       speed_y *= -1;
+      cur_y = Math.min(Math.max(0, cur_y), canvas.height);
    }
 
    cur_x += speed_x;

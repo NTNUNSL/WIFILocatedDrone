@@ -6,6 +6,7 @@
 Your browser does not support the HTML5 canvas tag.</canvas>
 <br>
 
+<select id="algorithm"></select>
 <button onclick="start();">Start</button>
 <button onclick="pause();" id="button_pause">Pause</button>
 <button onclick="reset();">Reset</button>
@@ -18,7 +19,6 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <span>Current A(X): </span><span id="a_x"></span><br>
 <span>Current A(Y): </span><span id="a_y"></span><br>
 <span>Current RSSI: </span><span id="rssi"></span><br>
-<span id="debug"></span><br>
 
 <script>
 
@@ -35,6 +35,8 @@ var simulator;
 var rssi_radius = 300;
 
 var drone = {};
+var path = {}; // dummy, for readibility
+path.algorithm = [];
 
 function init_envvar() {
    drone.cur_x = 10;
@@ -44,6 +46,16 @@ function init_envvar() {
    drone.acc_x = 1;
    drone.acc_y = 1;
    drone.rssi;
+}
+
+function init_algorithmlist() {
+   document.getElementById("algorithm").options.length = 0;
+   var algorithm_list = document.getElementById("algorithm");
+   for(var i = 0; i < path.algorithm.length; i += 1) {
+      var option = document.createElement("option");
+      option.text = path.algorithm[i];
+      algorithm_list.add(option);
+   }
 }
 
 function init_rssi() {
@@ -116,6 +128,7 @@ function reset() {
    ctx.clearRect(0, 0, canvas.width, canvas.width);
    init_rssi();
    init_envvar();
+   init_algorithmlist();
    is_start = false;
    is_pause = false;
 
@@ -131,7 +144,13 @@ function reset() {
 init_rssi();
 init_envvar();
 
-</script> 
+</script>
+
+<script src="algo.js"></script>
+
+<script>
+   init_algorithmlist();
+</script>
 
 </body>
 </html>

@@ -13,16 +13,26 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <button onclick="reset();">Reset</button>
 
 <br><br>
-<span>Current X: </span><span id="x"></span><br>
-<span>Current Y: </span><span id="y"></span><br>
-<span>Current V(X): </span><span id="v_x"></span><br>
-<span>Current V(Y): </span><span id="v_y"></span><br>
-<span>Current A(X): </span><span id="a_x"></span><br>
-<span>Current A(Y): </span><span id="a_y"></span><br>
-<span>Current RSSI: </span><span id="rssi"></span><br>
+
+<table style="width:60%">
+   <tr>
+      <td><span>Current P(X):  </span><span id="x"></span></td>
+      <td><span>Current P(Y):  </span><span id="y"></span></td>
+   </tr>
+   <tr>
+      <td><span>Current V(X):  </span><span id="v_x"></span></td>
+      <td><span>Current V(Y):  </span><span id="v_y"></span></td>
+   </tr>
+   <tr>
+      <td><span>Current A(X):  </span><span id="a_x"></span></td>
+      <td><span>Current A(Y):  </span><span id="a_y"></span></td>
+   </tr>
+   <tr>
+      <td><span>Current RSSI:  </span><span id="rssi"></span></td>
+   </tr>
+</table> 
 
 <script>
-
 var canvas = document.getElementById("simulator");
 canvas.width = 800;
 canvas.height = 600;
@@ -144,7 +154,6 @@ function reset() {
 
 init_rssi();
 init_envvar();
-
 </script>
 
 <script src="algo.js"></script>

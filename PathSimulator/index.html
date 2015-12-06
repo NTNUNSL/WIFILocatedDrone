@@ -7,6 +7,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <br>
 <span>Current X: </span><span id="x"></span><br>
 <span>Current Y: </span><span id="y"></span><br>
+<span>Current V(X): </span><span id="v_x"></span><br>
+<span>Current V(Y): </span><span id="v_y"></span><br>
+<span>Current A(X): </span><span id="a_x"></span><br>
+<span>Current A(Y): </span><span id="a_y"></span><br>
 <span>Current RSSI: </span><span id="rssi"></span><br>
 <span id="debug"></span><br>
 
@@ -16,12 +20,15 @@ var canvas = document.getElementById("simulator");
 canvas.width = 800;
 canvas.height = 600;
 var ctx = canvas.getContext("2d");
+var frame_rate = 60;
 
 var rssi_radius = 300;
 var cur_x = 10;
 var cur_y = 100;
 var speed_x = 1;
 var speed_y = 3;
+var acc_x = 1;
+var acc_y = 1;
 
 function init_rssi() {
    var grd = ctx.createRadialGradient(canvas.width/2, canvas.height/2, rssi_radius, canvas.width/2, canvas.height/2, 0);
@@ -49,6 +56,11 @@ function update_drone() {
    ctx.fill();
    ctx.closePath(); 
 
+   // v = v + at
+   speed_x += acc_x/frame_rate;
+   speed_y += acc_y/frame_rate;
+
+   // boundary
    if (cur_x >= canvas.width | cur_x <= 0) {
       speed_x *= -1;
    }
@@ -61,10 +73,14 @@ function update_drone() {
 
    document.getElementById("x").innerHTML = cur_x;
    document.getElementById("y").innerHTML = cur_y;
+   document.getElementById("v_x").innerHTML = speed_x;
+   document.getElementById("v_y").innerHTML = speed_y;
+   document.getElementById("a_x").innerHTML = acc_x;
+   document.getElementById("a_y").innerHTML = acc_y;
    document.getElementById("rssi").innerHTML = rssi;
 }
 
-setInterval(update_drone, 1000/60);
+setInterval(update_drone, 1000/frame_rate);
 
 </script> 
 

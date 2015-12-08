@@ -30,6 +30,12 @@ Your browser does not support the HTML5 canvas tag.</canvas>
    <tr>
       <td><span>Current RSSI:  </span><span id="rssi"></span></td>
    </tr>
+   <tr>
+      <td><span>Current Head(degree):  </span><span id="head"></span></td>
+   </tr>
+   <tr>
+      <td><span>Current Move Power:  </span><span id="acc"></span></td>
+   </tr>
 </table> 
 
 <script>
@@ -61,6 +67,16 @@ function init_envvar() {
    // user control
    drone.head = -45; // degree
    drone.acc = 1;
+
+   drone.turn_left = function(degree) {
+      drone.head -= degree;
+      drone.head = drone.head % 360;
+   }
+
+   drone.turn_right = function(degree) {
+      drone.head += degree;
+      drone.head = drone.head % 360;
+   }
 }
 
 function init_algorithmlist() {
@@ -120,6 +136,8 @@ function update_drone() {
          drone.cur_y = Math.min(Math.max(0, drone.cur_y), canvas.height);
       }
 
+      drone.turn_right(1);
+
       document.getElementById("x").innerHTML = drone.cur_x;
       document.getElementById("y").innerHTML = drone.cur_y;
       document.getElementById("v_x").innerHTML = drone.speed_x;
@@ -127,6 +145,8 @@ function update_drone() {
       document.getElementById("a_x").innerHTML = drone.acc_x;
       document.getElementById("a_y").innerHTML = drone.acc_y;
       document.getElementById("rssi").innerHTML = drone.rssi;
+      document.getElementById("head").innerHTML = drone.head;
+      document.getElementById("acc").innerHTML = drone.acc;
    }
 }
 

@@ -52,11 +52,15 @@ path.algorithm = [];
 function init_envvar() {
    drone.cur_x = 10;
    drone.cur_y = 100;
-   drone.speed_x = 1;
-   drone.speed_y = 3;
-   drone.acc_x = 1;
-   drone.acc_y = 1;
+   drone.speed_x = 0;
+   drone.speed_y = 0;
+   drone.acc_x = 0;
+   drone.acc_y = 0;
    drone.rssi;
+
+   // user control
+   drone.head = -45; // degree
+   drone.acc = 1;
 }
 
 function init_algorithmlist() {
@@ -95,22 +99,26 @@ function update_drone() {
       ctx.fill();
       ctx.closePath(); 
 
+      // project of acc on x, y
+      drone.acc_x = drone.acc * Math.cos(drone.head/180*Math.PI);
+      drone.acc_y = drone.acc * Math.sin(drone.head/180*Math.PI);
+
       // v = v + at
       drone.speed_x += drone.acc_x/frame_rate;
       drone.speed_y += drone.acc_y/frame_rate;
 
+      drone.cur_x += drone.speed_x;
+      drone.cur_y += drone.speed_y;
+      
       // boundary
       if (drone.cur_x >= canvas.width | drone.cur_x <= 0) {
-         drone.speed_x *= -1;
+         //drone.speed_x *= -1;
          drone.cur_x = Math.min(Math.max(0, drone.cur_x), canvas.width);
       }
       if (drone.cur_y >= canvas.height | drone.cur_y <= 0) {
-         drone.speed_y *= -1;
+         //drone.speed_y *= -1;
          drone.cur_y = Math.min(Math.max(0, drone.cur_y), canvas.height);
       }
-
-      drone.cur_x += drone.speed_x;
-      drone.cur_y += drone.speed_y;
 
       document.getElementById("x").innerHTML = drone.cur_x;
       document.getElementById("y").innerHTML = drone.cur_y;

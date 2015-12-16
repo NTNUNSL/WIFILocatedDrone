@@ -14,7 +14,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 <br><br>
 
-<table style="width:60%">
+<table style="width:80%">
    <tr>
       <td><span>Current P(X):  </span><span id="x"></span></td>
       <td><span>Current P(Y):  </span><span id="y"></span></td>
@@ -48,9 +48,11 @@ var frame_rate = 60;
 var is_start = false;
 var is_pause = false;
 var simulator;
+var update_algorithm;
 
-var rssi_radius = 300;
-var alpha = 0.999;
+var rssi_radius = 200;
+var alpha = 0.9;
+var boundary_space = 10;
 
 var drone = {};
 var path = {}; // dummy, for readibility
@@ -67,8 +69,8 @@ function init_envvar() {
    drone.shape = [[0,-15],[-5,0],[5,0]]
 
    // user control
-   drone.head = 0; // degree
-   drone.acc = 1;
+   drone.head = 180; // degree
+   drone.acc = 0;
 
    drone.turn_left = function(degree) {
       drone.head -= degree;
@@ -86,8 +88,8 @@ function init_algorithmlist() {
    var algorithm_list = document.getElementById("algorithm");
    for(var i = 0; i < path.algorithm.length; i += 1) {
       var option = document.createElement("option");
-      option.text = path.algorithm[i].name;
-      option.value = path.algorithm[i].algo;
+      option.text = path.algorithm[i];
+      option.value = path.algorithm[i];
       algorithm_list.add(option);
    }
 }
@@ -127,8 +129,8 @@ function update_drone() {
 
 
       // project of acc on x, y
-      drone.acc_x = drone.acc * Math.cos(drone.head*Math.PI/180);
-      drone.acc_y = drone.acc * Math.sin(drone.head*Math.PI/180);
+      drone.acc_x = drone.acc * Math.cos((drone.head-90)*Math.PI/180);
+      drone.acc_y = drone.acc * Math.sin((drone.head-90)*Math.PI/180);
 
       // v = v + at
       drone.speed_x += drone.acc_x/frame_rate;
@@ -143,16 +145,14 @@ function update_drone() {
       drone.cur_y += drone.speed_y;
       
       // boundary
-      if (drone.cur_x >= canvas.width | drone.cur_x <= 0) {
-         //drone.speed_x *= -1;
-         drone.cur_x = Math.min(Math.max(0, drone.cur_x), canvas.width);
+      if (drone.cur_x >= canvas.width-boundary_space | drone.cur_x <= boundary_space) {
+         drone.cur_x = Math.min(Math.max(boundary_space, drone.cur_x), canvas.width-boundary_space);
       }
-      if (drone.cur_y >= canvas.height | drone.cur_y <= 0) {
-         //drone.speed_y *= -1;
-         drone.cur_y = Math.min(Math.max(0, drone.cur_y), canvas.height);
+      if (drone.cur_y >= canvas.height-boundary_space | drone.cur_y <= boundary_space) {
+         drone.cur_y = Math.min(Math.max(boundary_space, drone.cur_y), canvas.height-boundary_space);
       }
 
-      drone.turn_right(1);
+      window['RandomWalk']();
 
       document.getElementById("x").innerHTML = drone.cur_x;
       document.getElementById("y").innerHTML = drone.cur_y;
@@ -168,6 +168,7 @@ function update_drone() {
 
 function start() {
    if (!is_start) {
+      update_algorithm = document.getElementById("algorithm").value;
       simulator = setInterval(update_drone, 1000/frame_rate);
       is_start = true;
    }

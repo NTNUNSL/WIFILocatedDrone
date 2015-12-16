@@ -57,17 +57,18 @@ var path = {}; // dummy, for readibility
 path.algorithm = [];
 
 function init_envvar() {
-   drone.cur_x = 10;
+   drone.cur_x = 100;
    drone.cur_y = 100;
    drone.speed_x = 0;
    drone.speed_y = 0;
    drone.acc_x = 0;
    drone.acc_y = 0;
    drone.rssi;
+   drone.shape = [[0,-15],[-5,0],[5,0]]
 
    // user control
    drone.head = 0; // degree
-   drone.acc = 0;
+   drone.acc = 1;
 
    drone.turn_left = function(degree) {
       drone.head -= degree;
@@ -105,21 +106,29 @@ function init_rssi() {
 
 function update_drone() {
    if(!is_pause) {
-      ctx.clearRect(0, 0, canvas.width, canvas.width);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       init_rssi();
 
       var p = ctx.getImageData(drone.cur_x, drone.cur_y, 10, 10).data;
       drone.rssi = p[1] == 0 ? 0 : 255-p[1];
 
-      ctx.fillStyle = "black";
+      ctx.save();
+      ctx.translate(drone.cur_x, drone.cur_y);
+      ctx.rotate(drone.head*Math.PI/180);
+      ctx.fillStyle = "green";
       ctx.beginPath();
-      ctx.arc(drone.cur_x, drone.cur_y, 5, 0, 2 * Math.PI);
+      ctx.moveTo(drone.shape[0][0],drone.shape[0][1]);
+      ctx.lineTo(drone.shape[1][0],drone.shape[1][1]);
+      ctx.lineTo(drone.shape[2][0],drone.shape[2][1]);
+      ctx.closePath();
+      ctx.stroke();
       ctx.fill();
-      ctx.closePath(); 
+      ctx.restore();
+
 
       // project of acc on x, y
-      drone.acc_x = drone.acc * Math.cos(drone.head/180*Math.PI);
-      drone.acc_y = drone.acc * Math.sin(drone.head/180*Math.PI);
+      drone.acc_x = drone.acc * Math.cos(drone.head*Math.PI/180);
+      drone.acc_y = drone.acc * Math.sin(drone.head*Math.PI/180);
 
       // v = v + at
       drone.speed_x += drone.acc_x/frame_rate;

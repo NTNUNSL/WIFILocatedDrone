@@ -50,6 +50,7 @@ var is_pause = false;
 var simulator;
 
 var rssi_radius = 300;
+var alpha = 0.999;
 
 var drone = {};
 var path = {}; // dummy, for readibility
@@ -65,8 +66,8 @@ function init_envvar() {
    drone.rssi;
 
    // user control
-   drone.head = -45; // degree
-   drone.acc = 1;
+   drone.head = 0; // degree
+   drone.acc = 0;
 
    drone.turn_left = function(degree) {
       drone.head -= degree;
@@ -84,7 +85,8 @@ function init_algorithmlist() {
    var algorithm_list = document.getElementById("algorithm");
    for(var i = 0; i < path.algorithm.length; i += 1) {
       var option = document.createElement("option");
-      option.text = path.algorithm[i];
+      option.text = path.algorithm[i].name;
+      option.value = path.algorithm[i].algo;
       algorithm_list.add(option);
    }
 }
@@ -122,6 +124,11 @@ function update_drone() {
       // v = v + at
       drone.speed_x += drone.acc_x/frame_rate;
       drone.speed_y += drone.acc_y/frame_rate;
+
+      // fading
+      drone.speed_x *= alpha;
+      drone.speed_y *= alpha;
+
 
       drone.cur_x += drone.speed_x;
       drone.cur_y += drone.speed_y;

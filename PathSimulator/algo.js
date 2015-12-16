@@ -1,1 +1,3 @@
-path.algorithm.push("Hello");
+path.algorithm.push({name: "Keyboard", algo: function(){
+
+}});

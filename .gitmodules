@@ -1,0 +1,3 @@
+[submodule "DetectRSSI"]
+	path = DetectRSSI
+	url = https://github.com/NTNUNSL/DetectRSSI.git

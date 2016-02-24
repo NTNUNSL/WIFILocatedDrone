@@ -1,3 +1,6 @@
 [submodule "DetectRSSI"]
 	path = DetectRSSI
 	url = https://github.com/NTNUNSL/DetectRSSI.git
+[submodule "PathSimulator"]
+	path = PathSimulator
+	url = https://github.com/NTNUNSL/PathSimulator.git
